@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// Firebase の設定情報
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -12,6 +13,7 @@ const firebaseConfig = {
   appId: "YOUR_APP_ID",
 };
 
+// Firebase 初期化
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
@@ -20,9 +22,12 @@ export const db = getFirestore(app);
 // store.js
 import { create } from 'zustand';
 
+// Zustand によるグローバル状態管理
 export const useTaskStore = create((set) => ({
-  tasks: [],
+  tasks: [], // タスク一覧
+  persona: 'military', // 初期人格設定
   setTasks: (tasks) => set({ tasks }),
+  setPersona: (persona) => set({ persona }),
 }));
 
 // App.jsx
@@ -31,6 +36,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import './index.css';
 
+// アプリのルーティング設定
 function App() {
   return (
     <Router>
@@ -52,6 +58,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Login() {
   const navigate = useNavigate();
 
+  // Google ログイン処理
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, provider);
@@ -75,16 +82,17 @@ import { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, onSnapshot, query, where, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, serverTimestamp, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useTaskStore } from '../store';
 
 export default function Dashboard() {
   const [task, setTask] = useState('');
   const [deadline, setDeadline] = useState('');
-  const { tasks, setTasks } = useTaskStore();
+  const { tasks, setTasks, persona, setPersona } = useTaskStore();
   const user = auth.currentUser;
   const navigate = useNavigate();
 
+  // タスク一覧と人格設定の初期取得
   useEffect(() => {
     if (!user) return;
     const q = query(collection(db, 'users', user.uid, 'tasks'));
@@ -92,9 +100,27 @@ export default function Dashboard() {
       const taskList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setTasks(taskList);
     });
+    fetchPersona();
     return () => unsub();
   }, [user]);
 
+  // Firestore からユーザーの人格設定を取得
+  const fetchPersona = async () => {
+    const ref = doc(db, 'users', user.uid, 'settings', 'persona');
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      setPersona(snap.data().type);
+    }
+  };
+
+  // Firestore に人格設定を保存
+  const savePersona = async (newPersona) => {
+    const ref = doc(db, 'users', user.uid, 'settings', 'persona');
+    await setDoc(ref, { type: newPersona });
+    setPersona(newPersona);
+  };
+
+  // タスク追加処理
   const addTask = async () => {
     if (!task) return;
     await addDoc(collection(db, 'users', user.uid, 'tasks'), {
@@ -102,14 +128,36 @@ export default function Dashboard() {
       deadline,
       created: serverTimestamp(),
     });
+    // LINE通知を送信
+    await sendLineNotification(task, deadline, persona);
     setTask('');
     setDeadline('');
   };
 
+  // Cloud Function 経由で LINE 通知を送る
+  const sendLineNotification = async (taskText, taskDeadline, userPersona) => {
+    try {
+      await fetch('https://your-cloud-function-url/sendNotification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: user.uid,
+          persona: userPersona,
+          text: taskText,
+          deadline: taskDeadline
+        })
+      });
+    } catch (err) {
+      console.error('LINE通知エラー:', err);
+    }
+  };
+
+  // タスク削除処理
   const removeTask = async (id) => {
     await deleteDoc(doc(db, 'users', user.uid, 'tasks', id));
   };
 
+  // ログアウト処理
   const logout = async () => {
     await signOut(auth);
     navigate('/');
@@ -122,6 +170,7 @@ export default function Dashboard() {
         <button onClick={logout} className="text-red-500">ログアウト</button>
       </div>
       <div className="mb-4">
+        {/* タスク入力フォーム */}
         <input
           type="text"
           value={task}
@@ -139,6 +188,20 @@ export default function Dashboard() {
           追加
         </button>
       </div>
+      <div className="mb-4">
+        {/* 人格キャラ選択 */}
+        <label className="block mb-1 font-semibold">通知キャラ選択</label>
+        <select
+          value={persona}
+          onChange={(e) => savePersona(e.target.value)}
+          className="border p-2 w-full"
+        >
+          <option value="military">軍人系</option>
+          <option value="yandere">病み系</option>
+          <option value="cheerful">陽キャ系</option>
+        </select>
+      </div>
+      {/* タスク一覧 */}
       <ul>
         {tasks.map((t) => (
           <li key={t.id} className="border p-2 mb-2 flex justify-between">
