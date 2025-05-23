@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LINE爆撃くん - ToDo with 締切</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      padding: 2em;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #111;
+    }
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1em;
+    }
+    input {
+      padding: 0.5em;
+      font-size: 1em;
+    }
+    button {
+      padding: 0.5em 1em;
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button.delete {
+      background: #ef4444;
+    }
+    .task {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 0.75em;
+      margin-bottom: 0.5em;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .task-content {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>LINE爆撃くん（原型＋締切付き）</h1>
+
+  <div class="input-group">
+    <input id="taskInput" type="text" placeholder="タスク内容..." />
+    <input id="dateInput" type="date" />
+    <input id="timeInput" type="time" />
+    <button onclick="addTask()">追加</button>
+  </div>
+
+  <div id="taskList"></div>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const dateInput = document.getElementById('dateInput');
+    const timeInput = document.getElementById('timeInput');
+    const taskList = document.getElementById('taskList');
+    let tasks = [];
+
+    function addTask() {
+      const content = taskInput.value.trim();
+      const date = dateInput.value;
+      const time = timeInput.value;
+
+      if (!content || !date || !time) {
+        alert(\"タスク、日付、時刻すべてを入力してください。");
+        return;
+      }
+
+      const deadline = `${date} ${time}`;
+      const task = {
+        id: Date.now(),
+        content,
+        deadline
+      };
+
+      tasks.unshift(task);
+      taskInput.value = '';
+      dateInput.value = '';
+      timeInput.value = '';
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(task => task.id !== id);
+      renderTasks();
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      tasks.forEach(task => {
+        const div = document.createElement('div');
+        div.className = 'task';
+        div.innerHTML = `
+          <div class="task-content">
+            <strong>${task.content}</strong><br/>
+            <small>締切: ${task.deadline}</small>
+          </div>
+          <button class="delete" onclick="deleteTask(${task.id})">削除</button>
+        `;
+        taskList.appendChild(div);
+      });
+    }
+  </script>
+
+</body>
+</html>
