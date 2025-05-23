@@ -1,0 +1,6 @@
+// users/{uid}
+{
+  "uid": "firebaseUid123",
+  "lineUserId": "Uxxxxxx",
+  "optIn": true
+}
