@@ -1,35 +1,23 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>動的リスト作成</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>縦長の表</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>動的リスト作成</h1>
+ <h2>ToDoリスト</h2>
 
-  <!-- 入力フォーム -->
-  <div class="input-form">
-    <input type="text" id="itemInput" placeholder="新しい項目を入力">
-    <button onclick="addItem()">追加</button>
-  </div>
+<div class="form">
+  <input type="text" id="taskTitle" placeholder="項目名（例：項目1）">
+  <input type="text" id="taskDetail" placeholder="内容（例：12時に出かける）">
+  <button onclick="addTodo()">追加</button>
+</div>
 
-  <!-- リスト表示エリア -->
-  <div class="list-container">
-    <table id="itemList">
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>項目</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody id="listBody">
-        <!-- ここに動的に項目が追加されます -->
-      </tbody>
-    </table>
-  </div>
+<div id="todoList" class="todo-list">
+  <!-- ここに追加される -->
+</div>
+
 
   <script src="script.js"></script>
 </body>
