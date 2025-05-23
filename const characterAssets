@@ -1,0 +1,12 @@
+const characterAssets = {
+  yandere: {
+    message: (task: string) => `ねぇ…まだ「${task}」やってないの…？怖いなぁ…🥺`,
+    image: "https://yourdomain.com/assets/yandere.png",
+    audio: "https://yourdomain.com/assets/yandere_voice.m4a",
+  },
+  military: {
+    message: (task: string) => `任務「${task}」、完了報告がまだだぞ！`,
+    image: "https://yourdomain.com/assets/military.jpg",
+    audio: "https://yourdomain.com/assets/military_voice.m4a",
+  },
+};
