@@ -1,56 +1,65 @@
-// 項目を追加する関数
-function addItem() {
-  const input = document.getElementById('itemInput');
-  const itemText = input.value.trim();
-  
-  if (itemText === '') {
-    alert('項目を入力してください');
+function addRow() {
+  const labelInput = document.getElementById('labelInput');
+  const valueInput = document.getElementById('valueInput');
+  const label = labelInput.value.trim();
+  const value = valueInput.value.trim();
+
+  if (!label || !value) {
+    alert('両方の項目を入力してください');
     return;
   }
 
-  const tbody = document.getElementById('listBody');
-  const rowCount = tbody.rows.length;
-  
-  // 新しい行を作成
-  const newRow = tbody.insertRow();
-  
-  // 番号セル
-  const numberCell = newRow.insertCell(0);
-  numberCell.textContent = rowCount + 1;
-  
-  // 項目セル
-  const itemCell = newRow.insertCell(1);
-  itemCell.textContent = itemText;
-  
-  // 削除ボタンセル
-  const deleteCell = newRow.insertCell(2);
-  const deleteButton = document.createElement('button');
-  deleteButton.textContent = '削除';
-  deleteButton.className = 'delete-btn';
-  deleteButton.onclick = function() {
-    tbody.removeChild(newRow);
-    updateNumbers();
-  };
-  deleteCell.appendChild(deleteButton);
-  
+  const table = document.getElementById('table');
+
+  const row = document.createElement('div');
+  row.className = 'row';
+
+  const labelDiv = document.createElement('div');
+  labelDiv.className = 'label';
+  labelDiv.textContent = label;
+
+  const valueDiv = document.createElement('div');
+  valueDiv.className = 'value';
+  valueDiv.textContent = value;
+
+  row.appendChild(labelDiv);
+  row.appendChild(valueDiv);
+  table.appendChild(row);
+
   // 入力欄をクリア
-  input.value = '';
-  input.focus();
+  labelInput.value = '';
+  valueInput.value = '';
+}
+function addTodo() {
+  const titleInput = document.getElementById('taskTitle');
+  const detailInput = document.getElementById('taskDetail');
+  const title = titleInput.value.trim();
+  const detail = detailInput.value.trim();
+
+  if (!title || !detail) {
+    alert('項目名と内容を両方入力してください');
+    return;
+  }
+
+  const container = document.getElementById('todoList');
+
+  const row = document.createElement('div');
+  row.className = 'todo-row';
+
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'todo-title';
+  titleDiv.textContent = title;
+
+  const detailDiv = document.createElement('div');
+  detailDiv.className = 'todo-detail';
+  detailDiv.textContent = detail;
+
+  row.appendChild(titleDiv);
+  row.appendChild(detailDiv);
+  container.appendChild(row);
+
+  // 入力クリア
+  titleInput.value = '';
+  detailInput.value = '';
 }
 
-// 番号を更新する関数
-function updateNumbers() {
-  const tbody = document.getElementById('listBody');
-  const rows = tbody.rows;
-  
-  for (let i = 0; i < rows.length; i++) {
-    rows[i].cells[0].textContent = i + 1;
-  }
-}
-
-// Enterキーで項目を追加
-document.getElementById('itemInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    addItem();
-  }
-});
