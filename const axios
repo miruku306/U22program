@@ -1,0 +1,41 @@
+const axios = require("axios");
+
+exports.sendPersonaReminder = functions.pubsub.schedule("every 1 hours").onRun(async () => {
+  const usersRef = admin.firestore().collection("users");
+  const snapshot = await usersRef.where("optIn", "==", true).get();
+
+  for (const doc of snapshot.docs) {
+    const user = doc.data();
+    const persona = user.persona || "military";
+    const task = "今日のレポート提出";
+
+    const asset = characterAssets[persona];
+
+    const messages = [
+      {
+        type: "text",
+        text: asset.message(task),
+      },
+      {
+        type: "image",
+        originalContentUrl: asset.image,
+        previewImageUrl: asset.image,
+      },
+      {
+        type: "audio",
+        originalContentUrl: asset.audio,
+        duration: 3000, // ミリ秒（例：3秒）
+      },
+    ];
+
+    await axios.post("https://api.line.me/v2/bot/message/push", {
+      to: user.lineUserId,
+      messages,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${process.env.LINE_ACCESS_TOKEN}`,
+        "Content-Type": "application/json"
+      }
+    });
+  }
+});
