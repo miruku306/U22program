@@ -1,0 +1,7 @@
+// users/{uid}
+{
+  "uid": "abc123",
+  "lineUserId": "Uxxxxxxxx",
+  "persona": "military",  // ← この値で切り替え
+  "optIn": true
+}
