@@ -1,0 +1,27 @@
+const admin = require("firebase-admin");
+const axios = require("axios");
+const { characterTemplates } = require("./characterTemplates");
+
+exports.sendTaskReminder = functions.pubsub.schedule("every 1 hours").onRun(async (context) => {
+  const usersRef = admin.firestore().collection("users");
+  const snapshot = await usersRef.where("optIn", "==", true).get();
+
+  snapshot.forEach(async (docSnap) => {
+    const user = docSnap.data();
+    const persona = user.persona || "polite"; // デフォルト
+
+    const task = "買い物リストを作る"; // ← Firestoreから取得してもOK
+
+    const message = characterTemplates[persona](task);
+
+    await axios.post("https://api.line.me/v2/bot/message/push", {
+      to: user.lineUserId,
+      messages: [{ type: "text", text: message }]
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.LINE_ACCESS_TOKEN}`
+      }
+    });
+  });
+});
