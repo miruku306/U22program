@@ -1,0 +1,164 @@
+import React, { useEffect, useState } from 'react';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+
+// Firebase初期設定（環境に合わせて書き換えてください）
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_AUTH_DOMAIN',
+  projectId: 'YOUR_PROJECT_ID',
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ユーザー設定の型定義
+type UserSettings = {
+  lineToken: string;          // LINE連携トークン
+  notificationsEnabled: boolean;  // 通知ON/OFF
+  notificationStartTime: string;  // 通知開始時間（HH:mm形式）
+  notificationEndTime: string;    // 通知終了時間（HH:mm形式）
+};
+
+const defaultSettings: UserSettings = {
+  lineToken: '',
+  notificationsEnabled: true,
+  notificationStartTime: '08:00',
+  notificationEndTime: '22:00',
+};
+
+const Settings: React.FC = () => {
+  const userId = 'currentUserId'; // ここはログインユーザーIDに置き換えてください
+
+  const [settings, setSettings] = useState<UserSettings>(defaultSettings);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+
+  // Firestoreからユーザー設定を取得
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setLoading(true);
+      try {
+        const docRef = doc(db, 'userSettings', userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setSettings(docSnap.data() as UserSettings);
+        } else {
+          setSettings(defaultSettings);
+        }
+      } catch (error) {
+        console.error('設定取得エラー:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, [userId]);
+
+  // 入力変更ハンドラ
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setSettings(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  // 設定保存処理
+  const handleSave = async () => {
+    setSaving(true);
+    setMessage('');
+    try {
+      const docRef = doc(db, 'userSettings', userId);
+      await setDoc(docRef, settings);
+      setMessage('設定を保存しました！');
+    } catch (error) {
+      console.error('設定保存エラー:', error);
+      setMessage('保存中にエラーが発生しました。');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div>読み込み中...</div>;
+
+  return (
+    <div style={{ maxWidth: 500, margin: 'auto', padding: 20 }}>
+      <h1>⚙️ 各種設定</h1>
+
+      {/* LINE連携トークン入力 */}
+      <div style={{ marginBottom: 20 }}>
+        <label htmlFor="lineToken">LINE連携トークン:</label><br />
+        <input
+          type="text"
+          id="lineToken"
+          name="lineToken"
+          value={settings.lineToken}
+          onChange={handleChange}
+          placeholder="LINEトークンを入力"
+          style={{ width: '100%', padding: 8, marginTop: 5 }}
+        />
+      </div>
+
+      {/* 通知ON/OFF */}
+      <div style={{ marginBottom: 20 }}>
+        <label>
+          <input
+            type="checkbox"
+            name="notificationsEnabled"
+            checked={settings.notificationsEnabled}
+            onChange={handleChange}
+          />{' '}
+          通知を有効にする
+        </label>
+      </div>
+
+      {/* 通知時間帯設定 */}
+      <div style={{ marginBottom: 20 }}>
+        <label htmlFor="notificationStartTime">通知開始時間:</label><br />
+        <input
+          type="time"
+          id="notificationStartTime"
+          name="notificationStartTime"
+          value={settings.notificationStartTime}
+          onChange={handleChange}
+          disabled={!settings.notificationsEnabled}
+          style={{ padding: 8, marginTop: 5 }}
+        />
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <label htmlFor="notificationEndTime">通知終了時間:</label><br />
+        <input
+          type="time"
+          id="notificationEndTime"
+          name="notificationEndTime"
+          value={settings.notificationEndTime}
+          onChange={handleChange}
+          disabled={!settings.notificationsEnabled}
+          style={{ padding: 8, marginTop: 5 }}
+        />
+      </div>
+
+      {/* 保存ボタン */}
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          cursor: saving ? 'not-allowed' : 'pointer',
+        }}
+      >
+        {saving ? '保存中...' : '設定を保存'}
+      </button>
+
+      {/* メッセージ表示 */}
+      {message && <p style={{ marginTop: 15 }}>{message}</p>}
+    </div>
+  );
+};
+
+export default Settings;
