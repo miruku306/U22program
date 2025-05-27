@@ -1,0 +1,36 @@
+<!-- persona.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>キャラ選択</title>
+</head>
+<body>
+  <h1>通知キャラを選んでください</h1>
+  <select id="personaSelect">
+    <option value="">選択してください</option>
+    <option value="yandere">病み系</option>
+    <option value="military">軍人系</option>
+    <option value="gal">ギャル系</option>
+    <option value="polite">敬語系</option>
+  </select>
+  <button onclick="selectPersona()">決定</button>
+
+  <script>
+    function selectPersona() {
+      const selected = document.getElementById('personaSelect').value;
+      if (!selected) {
+        alert("キャラを選んでください");
+        return;
+      }
+
+      // 必要ならlocalStorageに保存（後で通知に使う）
+      localStorage.setItem('selectedPersona', selected);
+
+      // どこかに遷移、または完了画面
+      alert("キャラが設定されました！");
+      // window.location.href = "done.html"; // など
+    }
+  </script>
+</body>
+</html>
