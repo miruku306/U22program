@@ -1,0 +1,105 @@
+import React, { useEffect, useState } from 'react';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+
+// Firebaseの初期設定（自分の設定に置き換えてください）
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',        // APIキー
+  authDomain: 'YOUR_AUTH_DOMAIN',// 認証ドメイン
+  projectId: 'YOUR_PROJECT_ID',  // プロジェクトID
+};
+const app = initializeApp(firebaseConfig); // Firebaseアプリ初期化
+const db = getFirestore(app);               // Firestoreデータベース取得
+
+// ユーザーの統計情報の型定義
+type UserStats = {
+  userId: string;        // ユーザーID
+  userName: string;      // ユーザー名
+  missedTasks: number;   // 未達成回数（タスクを達成できなかった回数）
+  bombedCount: number;   // 被爆数（爆撃を受けた回数）
+};
+
+const Ranking: React.FC = () => {
+  // ステート：ユーザー統計情報のリスト
+  const [stats, setStats] = useState<UserStats[]>([]);
+  // ローディング状態の管理
+  const [loading, setLoading] = useState(true);
+  // MVP（最多被爆者）のユーザー情報
+  const [mvp, setMvp] = useState<UserStats | null>(null);
+
+  // コンポーネントのマウント時にデータを取得する副作用
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true); // データ取得中にローディング状態にする
+      try {
+        // Firestoreの"userStats"コレクションから全ドキュメントを取得
+        const querySnapshot = await getDocs(collection(db, 'userStats'));
+
+        // 取得したデータを配列に変換
+        const data: UserStats[] = [];
+        querySnapshot.forEach((doc) => {
+          data.push(doc.data() as UserStats);
+        });
+
+        setStats(data); // ステートに設定
+
+        // MVP（最多被爆者）を計算：被爆数が最大のユーザーを選ぶ
+        const maxBombed = data.reduce((prev, curr) => (curr.bombedCount > prev.bombedCount ? curr : prev), data[0]);
+        setMvp(maxBombed); // MVPをセット
+      } catch (error) {
+        // エラーが発生した場合にコンソールに出力
+        console.error('Error fetching stats:', error);
+      } finally {
+        setLoading(false); // ローディング終了
+      }
+    };
+    fetchStats(); // データ取得関数を呼び出し
+  }, []);
+
+  // ローディング中は読み込みメッセージを表示
+  if (loading) return <div>読み込み中...</div>;
+
+  return (
+    <div>
+      <h1>🏆 サボり可視化ランキング</h1>
+
+      {/* ユーザーランキングのテーブル */}
+      <table
+        border={1}
+        cellPadding={8}
+        style={{ borderCollapse: 'collapse', width: '100%', maxWidth: 600 }}
+      >
+        <thead>
+          <tr>
+            <th>ユーザー名</th>
+            <th>未達成回数</th>
+            <th>被爆数</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {/* 被爆数で降順に並べ替え、テーブルの行を生成 */}
+          {stats
+            .sort((a, b) => b.bombedCount - a.bombedCount)
+            .map(({ userId, userName, missedTasks, bombedCount }) => (
+              // MVPの行は背景色をゴールドに変更して強調表示
+              <tr key={userId} style={{ backgroundColor: mvp?.userId === userId ? '#ffd700' : 'transparent' }}>
+                <td>{userName}</td>
+                <td>{missedTasks}</td>
+                <td>{bombedCount}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
+      {/* MVP表示：最多被爆者の名前と被爆数 */}
+      {mvp && (
+        <div style={{ marginTop: 20, padding: 10, backgroundColor: '#fff8dc', border: '1px solid #ccc' }}>
+          <strong>MVP（最多被爆者）:</strong> {mvp.userName} さん（{mvp.bombedCount}回）
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Ranking;
