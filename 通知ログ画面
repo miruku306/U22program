@@ -1,0 +1,76 @@
+import React, { useEffect, useState } from 'react';
+import { getFirestore, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+
+// Firebase初期設定（自分の設定に置き換えてください）
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_AUTH_DOMAIN',
+  projectId: 'YOUR_PROJECT_ID',
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 通知ログの型定義
+type NotificationLog = {
+  id: string;           // ドキュメントID
+  timestamp: Date;      // 通知日時
+  character: string;    // 通知キャラクター名（例：病み彼女、体育会系先輩など）
+  message: string;      // 通知内容のテキスト
+};
+
+const NotificationLogScreen: React.FC = () => {
+  const [logs, setLogs] = useState<NotificationLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      setLoading(true);
+      try {
+        // 通知ログを日時降順で最大100件取得
+        const q = query(collection(db, 'notificationLogs'), orderBy('timestamp', 'desc'), limit(100));
+        const querySnapshot = await getDocs(q);
+
+        const data: NotificationLog[] = [];
+        querySnapshot.forEach(doc => {
+          const d = doc.data();
+          data.push({
+            id: doc.id,
+            timestamp: d.timestamp.toDate ? d.timestamp.toDate() : new Date(d.timestamp),
+            character: d.character,
+            message: d.message,
+          });
+        });
+
+        setLogs(data);
+      } catch (error) {
+        console.error('通知ログ取得エラー:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLogs();
+  }, []);
+
+  if (loading) return <div>読み込み中...</div>;
+
+  return (
+    <div style={{ maxWidth: 700, margin: 'auto', padding: 20 }}>
+      <h1>🕑 通知ログ</h1>
+      {logs.length === 0 && <p>通知履歴がありません。</p>}
+
+      {/* 通知ログ一覧 */}
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {logs.map(log => (
+          <li key={log.id} style={{ marginBottom: 15, borderBottom: '1px solid #ccc', paddingBottom: 10 }}>
+            <div><strong>日時:</strong> {log.timestamp.toLocaleString()}</div>
+            <div><strong>通知キャラ:</strong> {log.character}</div>
+            <div><strong>内容:</strong> {log.message}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default NotificationLogScreen;
