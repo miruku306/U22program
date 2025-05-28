@@ -1,0 +1,89 @@
+const taskInput = document.getElementById('taskInput');
+const dateInput = document.getElementById('dateInput');
+const timeInput = document.getElementById('timeInput');
+const taskList = document.getElementById('taskList');
+let tasks = [];
+
+window.onload = () => {
+  const saved = localStorage.getItem('tasks');
+  if (saved) {
+    tasks = JSON.parse(saved);
+    renderTasks();
+  }
+};
+
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function addTask() {
+  const content = taskInput.value.trim();
+  const date = dateInput.value;
+  const time = timeInput.value;
+
+  if (!content || !date || !time) {
+    alert("すべての項目を入力してください。");
+    return;
+  }
+
+  const deadlineStr = `${date} ${time}`;
+  const deadline = new Date(deadlineStr);
+
+  const task = {
+    id: Date.now(),
+    content,
+    deadline: deadlineStr
+  };
+
+  tasks.unshift(task);
+  saveTasks();
+  renderTasks();
+
+  taskInput.value = '';
+  dateInput.value = '';
+  timeInput.value = '';
+
+  // 通知の予約（締切5分前）
+  const now = new Date();
+  const notifyTime = new Date(deadline.getTime() - 5 * 60 * 1000); // 5分前
+  const timeout = notifyTime - now;
+
+  if (timeout > 0) {
+    setTimeout(() => sendNotification(task), timeout);
+  }
+}
+
+function deleteTask(id) {
+  tasks = tasks.filter(task => task.id !== id);
+  saveTasks();
+  renderTasks();
+}
+
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach(task => {
+    const div = document.createElement('div');
+    div.className = 'task';
+    div.innerHTML = `
+      <div class="task-content">
+        <strong>${task.content}</strong>
+        <small>締切: ${task.deadline}</small>
+      </div>
+      <button class="delete" onclick="deleteTask(${task.id})">削除</button>
+    `;
+    taskList.appendChild(div);
+  });
+}
+
+ if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+
+  function sendNotification(task) {
+  if (Notification.permission === "granted") {
+    const notification = new Notification("⏰ タスクの時間です！", {
+      body: `${task.content}（締切: ${task.deadline}）`,
+      icon: "icon.png" // 任意：通知に表示するアイコン画像
+    });
+  }
+}
+}
