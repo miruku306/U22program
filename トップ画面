@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LINE爆撃くん - ToDo with Style</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <div class="wrapper">
+        <header class="header">
+            <div class="header-logo">🧠 LINE爆撃くん<br>君の脳を破壊しちゃうぞ💛</div>
+            <nav class="nav-menu">
+            <ul>
+            <li><a href="roguin.html">新規会員登録/ログイン</a></li>
+            <li><a href="">マイページ（ユーザー情報）</a> </li>
+             <li><a href="">通知キャラ設定リンク</a> </li>
+             <li><a href="">ログアウト</a> </li>
+
+            </ul>
+            </nav>
+        </header>
+  <div class="container">
+   
+
+    <div class="input-group">
+      <input id="taskInput" type="text" placeholder="やることを入力..." />
+      <input id="dateInput" type="date" />
+      <input id="timeInput" type="time" />
+      <button onclick="addTask()">追加</button>
+    </div>
+
+    <div id="taskList"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
