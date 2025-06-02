@@ -1,0 +1,32 @@
+// グループID登録処理
+document.getElementById('registerGroupBtn').addEventListener('click', () => {
+  const groupId = document.getElementById('groupIdInput').value.trim();
+  const status = document.getElementById('groupStatus');
+
+  if (groupId) {
+    status.textContent = `✅ グループ「${groupId}」が登録されました`;
+    status.style.color = '#28a745';
+  } else {
+    status.textContent = '⚠️ グループIDを入力してください';
+    status.style.color = '#d9534f';
+  }
+});
+
+// メンバー追加処理
+document.getElementById('addMemberBtn').addEventListener('click', () => {
+  const name = document.getElementById('memberNameInput').value.trim();
+  const list = document.getElementById('memberList');
+
+  if (name) {
+    const li = document.createElement('li');
+    li.textContent = name;
+    list.appendChild(li);
+    document.getElementById('memberNameInput').value = '';
+  }
+});
+
+// 爆撃ルール表示切替
+document.getElementById('toggleRulesBtn').addEventListener('click', () => {
+  const rules = document.getElementById('rulesContent');
+  rules.classList.toggle('hidden');
+});
