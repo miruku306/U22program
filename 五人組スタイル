@@ -1,0 +1,101 @@
+/* 基本 */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8fafc;
+}
+
+h1, h2, h3 {
+  margin-top: 1rem;
+  color: #333;
+}
+
+/* ヘッダー */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1ecd44;
+  color: #fff;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 1.2rem;
+  font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* コンテンツ */
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+/* セクション共通 */
+section {
+  margin-bottom: 2rem;
+}
+
+input[type="text"] {
+  width: 70%;
+  padding: 0.6rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  margin-left: 0.5rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}
+
+.status-msg {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #007bff;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.rules-section ul {
+  background-color: #f1f3f5;
+  padding: 1rem;
+  border-radius: 8px;
+}
