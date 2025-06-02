@@ -1,0 +1,32 @@
+// 仮データ
+const tasks = [
+  { title: "宿題", content: "数学の問題集を解く", status: "未完了" },
+  { title: "買い物", content: "牛乳とパンを購入", status: "完了" }
+];
+
+const logs = [
+  "2025-05-28 10:20 - 「早くやれや！」",
+  "2025-05-27 09:15 - 「お前まだやってないの？」",
+  "2025-05-26 18:00 - 「まだ！？そんなんじゃダメだよ！」"
+];
+
+// タスク表示
+const taskBody = document.getElementById("task-body");
+tasks.forEach(task => {
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${task.title}</td><td>${task.content}</td><td>${task.status}</td>`;
+  taskBody.appendChild(row);
+});
+
+// 通知ログ表示
+const logList = document.getElementById("log-list");
+logs.forEach(log => {
+  const li = document.createElement("li");
+  li.textContent = log;
+  logList.appendChild(li);
+});
+
+// 圧設定変更イベント（例：変更検知のみ）
+document.getElementById("pressure-form").addEventListener("change", e => {
+  console.log("圧設定が変更されました：", e.target.value);
+});
