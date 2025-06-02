@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>マイページ</title>
+  <link rel="stylesheet" href="css/style3.css">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+</head>
+</head>
+<body class="bg-pink-50 p-6 min-h-screen text-gray-800">
+
+<!-- カスタムヘッダー -->
+<header class="bg-lime-500 text-white flex justify-between items-center px-6 py-4 rounded-t-xl shadow">
+  <!-- 左側ロゴとキャッチ -->
+  <div>
+    <h1 class="text-xl font-bold text-blue-700 flex items-center">
+      🧠 <span class="ml-2">LINE爆撃くん</span>
+    </h1>
+    <p class="text-sm text-blue-400">君の脳を破壊しちゃうぞ <span class="text-yellow-400">💛</span></p>
+  </div>
+
+  <!-- 右側メニュー -->
+    <li><a href="Top.html">ホーム</a></li>
+     <li><a href="">通知キャラ設定リンク</a> </li>
+     <li><a href="">ログアウト</a> </li>
+  </nav>
+</header>
+
+  <!-- プロフィール -->
+  <section class="bg-white shadow rounded-xl p-5 mb-6 flex items-center space-x-4">
+    <img src="https://placekitten.com/80/80" alt="ユーザーアイコン" class="w-16 h-16 rounded-full border-4 border-pink-300">
+    <div>
+      <p class="text-xl font-bold">ユーザー名</p>
+      <p class="text-pink-500 text-sm">通知キャラ：ツンデレ魔女</p>
+    </div>
+    <button class="ml-auto bg-pink-400 text-white px-4 py-1 rounded-full hover:bg-pink-500 text-sm">⚙️ 設定</button>
+  </section>
+
+  
+     
+        
+      
+   
+  
+
+  <!-- 通知履歴 -->
+  <section class="bg-white shadow rounded-xl p-5 mb-6">
+    <h2 class="text-lg font-bold text-pink-600 mb-2">🔔 通知履歴／圧ログ</h2>
+    <ul class="list-disc list-inside text-sm space-y-1">
+      <li>2025-05-29 10:12 - 「早くしろにゃ」</li>
+      <li>2025-05-28 21:40 - 「え？まだ？」</li>
+    </ul>
+  </section>
+
+
+  <!-- スコア -->
+  <section class="bg-white shadow rounded-xl p-5 text-center">
+    <h2 class="text-lg font-bold text-pink-600 mb-2">🏆 サボりスコア</h2>
+    <p class="text-lg">🔥 サボり日数：<span class="font-bold">28日</span></p>
+    <p class="text-sm text-gray-600">🐾 圧かけられ回数：<span class="font-semibold">12回</span></p>
+  </section>
+
+</body>
+</html>
