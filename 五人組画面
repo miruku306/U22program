@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>五人組登録画面</title>
+  <link rel="stylesheet" href="css/style4.css">
+</head>
+<body>
+     <!-- ヘッダー -->
+  <header class="main-header">
+    <h1 class="logo">🔥 五人組マネージャー</h1>
+    <nav class="nav-links">
+      <a href="Top.html">🏠 ホーム</a>
+      <a href="mypage.html">👤マイページ</a>
+      <a href="#">⚙ 設定</a>
+    </nav>
+  </header>
+  <div class="container">
+    <h1>👥 五人組 登録画面</h1>
+
+    <!-- グループID登録 -->
+    <section class="group-section">
+      <h2>グループIDの登録</h2>
+      <input type="text" id="groupIdInput" placeholder="グループIDを入力">
+      <button id="registerGroupBtn">登録</button>
+      <p id="groupStatus" class="status-msg"></p>
+    </section>
+
+    <!-- メンバー一覧 -->
+    <section class="member-section">
+      <h2>メンバー一覧</h2>
+      <ul id="memberList">
+        <!-- メンバーが追加される -->
+      </ul>
+      <input type="text" id="memberNameInput" placeholder="メンバー名を入力">
+      <button id="addMemberBtn">追加</button>
+    </section>
+
+    <!-- 爆撃ルール表示 -->
+    <section class="rules-section">
+      <h2>爆撃ルール</h2>
+      <button id="toggleRulesBtn">ルールを表示</button>
+      <div id="rulesContent" class="hidden">
+        <ul>
+          <li>🌟 毎週最低1タスクを完了させる</li>
+          <li>💣 未達成者は全員から圧を受ける</li>
+          <li>👁️ 進捗はグループ全員に共有される</li>
+          <li>🚫 3回サボると罰ゲーム（任意）</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script src="gonigumi.js"></script>
+</body>
+</html>
