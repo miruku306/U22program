@@ -99,3 +99,15 @@ ul {
   padding: 1rem;
   border-radius: 8px;
 }
+.rules-section label {
+  display: block;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+#selectedRulesList {
+  background-color: #f0f8ff;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
