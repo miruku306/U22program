@@ -1,32 +1,62 @@
-// グループID登録処理
-document.getElementById('registerGroupBtn').addEventListener('click', () => {
-  const groupId = document.getElementById('groupIdInput').value.trim();
-  const status = document.getElementById('groupStatus');
+document.addEventListener('DOMContentLoaded', () => {
+  const saveRulesBtn = document.getElementById('saveRulesBtn');
+  const rulesForm = document.getElementById('rulesForm');
+  const selectedRulesList = document.getElementById('selectedRulesList');
 
-  if (groupId) {
-    status.textContent = `✅ グループ「${groupId}」が登録されました`;
-    status.style.color = '#28a745';
-  } else {
-    status.textContent = '⚠️ グループIDを入力してください';
-    status.style.color = '#d9534f';
+  // 初期化処理
+  loadSavedRules();
+
+  // 保存ボタン押下時
+  saveRulesBtn.addEventListener('click', () => {
+    const selectedRules = getSelectedRules();
+    saveRules(selectedRules);
+    renderSelectedRules(selectedRules);
+    alert('ルールを保存しました！');
+  });
+
+  // チェックされているルールを取得
+  function getSelectedRules() {
+    return Array.from(rulesForm.querySelectorAll('input[name="rule"]:checked'))
+      .map(input => input.value);
   }
-});
 
-// メンバー追加処理
-document.getElementById('addMemberBtn').addEventListener('click', () => {
-  const name = document.getElementById('memberNameInput').value.trim();
-  const list = document.getElementById('memberList');
-
-  if (name) {
-    const li = document.createElement('li');
-    li.textContent = name;
-    list.appendChild(li);
-    document.getElementById('memberNameInput').value = '';
+  // ルールをローカルストレージに保存
+  function saveRules(rules) {
+    try {
+      localStorage.setItem('selectedRules', JSON.stringify(rules));
+    } catch (e) {
+      console.error('ルールの保存に失敗しました', e);
+    }
   }
-});
 
-// 爆撃ルール表示切替
-document.getElementById('toggleRulesBtn').addEventListener('click', () => {
-  const rules = document.getElementById('rulesContent');
-  rules.classList.toggle('hidden');
+  // 保存済みルールを読み込んで表示
+  function loadSavedRules() {
+    try {
+      const saved = localStorage.getItem('selectedRules');
+      if (saved) {
+        const rules = JSON.parse(saved);
+        checkSavedRules(rules);
+        renderSelectedRules(rules);
+      }
+    } catch (e) {
+      console.error('保存されたルールの読み込みに失敗しました', e);
+    }
+  }
+
+  // チェックボックスの初期化
+  function checkSavedRules(rules) {
+    rulesForm.querySelectorAll('input[name="rule"]').forEach(input => {
+      input.checked = rules.includes(input.value);
+    });
+  }
+
+  // 選択されたルールをリストに表示
+  function renderSelectedRules(rules) {
+    selectedRulesList.innerHTML = '';
+    rules.forEach(rule => {
+      const li = document.createElement('li');
+      li.textContent = rule;
+      selectedRulesList.appendChild(li);
+    });
+  }
 });
