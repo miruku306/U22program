@@ -65,6 +65,7 @@
 
   <h4>✅ 選択中のルール</h4>
   <ul id="selectedRulesList"></ul>
+  <ul id="selectedRulesList"></ul>
 </section>
 
  
@@ -73,3 +74,4 @@
   <script src="gonigumi.js"></script>
 </body>
 </html>
+
