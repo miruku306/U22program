@@ -111,3 +111,12 @@ ul {
   border-radius: 6px;
   margin-top: 1rem;
 }
+.delete-rule-btn {
+  background-color: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+
