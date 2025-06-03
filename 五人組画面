@@ -16,7 +16,7 @@
     </nav>
   </header>
   <div class="container">
-    <h1>👥 五人組 登録画面</h1>
+    <h1>👥 グループ 登録画面</h1>
 
     <!-- グループID登録 -->
     <section class="group-section">
@@ -37,19 +37,38 @@
     </section>
 
     <!-- 爆撃ルール表示 -->
-    <section class="rules-section">
-      <h2>爆撃ルール</h2>
-      <button id="toggleRulesBtn">ルールを表示</button>
-      <div id="rulesContent" class="hidden">
-        <ul>
-          <li>🌟 毎週最低1タスクを完了させる</li>
-          <li>💣 未達成者は全員から圧を受ける</li>
-          <li>👁️ 進捗はグループ全員に共有される</li>
-          <li>🚫 3回サボると罰ゲーム（任意）</li>
-        </ul>
-      </div>
-    </section>
-  </div>
+     <section class="rules-section">
+  <h3>爆撃ルールを選択</h3>
+  <form id="rulesForm">
+    <label>
+      <input type="checkbox" name="rule" value="毎週最低1タスクを完了させる">
+      🌟 毎週最低1タスクを完了させる
+    </label><br>
+    <label>
+      <input type="checkbox" name="rule" value="未達成者は全員から圧を受ける">
+      💣 未達成者は全員から圧を受ける
+    </label><br>
+    <label>
+      <input type="checkbox" name="rule" value="進捗はグループ全員に共有される">
+      👁️ 進捗はグループ全員に共有される
+    </label><br>
+    <label>
+      <input type="checkbox" name="rule" value="3回サボると罰ゲーム（任意）">
+      🚫 3回サボると罰ゲーム（任意）
+    </label><br>
+    <label>
+      <input type="checkbox" name="rule" value="メンバーのランダム相互チェック">
+      🎲 メンバーのランダム相互チェック
+    </label><br>
+    <button type="button" id="saveRulesBtn">ルールを保存</button>
+  </form>
+
+  <h4>✅ 選択中のルール</h4>
+  <ul id="selectedRulesList"></ul>
+</section>
+
+ 
+  
 
   <script src="gonigumi.js"></script>
 </body>
