@@ -20,16 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
       .map(input => input.value);
   }
 
-  // ルールをローカルストレージに保存
+  // ローカルストレージに保存
   function saveRules(rules) {
     try {
       localStorage.setItem('selectedRules', JSON.stringify(rules));
     } catch (e) {
-      console.error('ルールの保存に失敗しました', e);
+      console.error('保存失敗:', e);
     }
   }
 
-  // 保存済みルールを読み込んで表示
+  // 保存済みルールを読み込む
   function loadSavedRules() {
     try {
       const saved = localStorage.getItem('selectedRules');
@@ -39,24 +39,39 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSelectedRules(rules);
       }
     } catch (e) {
-      console.error('保存されたルールの読み込みに失敗しました', e);
+      console.error('読み込み失敗:', e);
     }
   }
 
-  // チェックボックスの初期化
+  // チェック状態の初期化
   function checkSavedRules(rules) {
     rulesForm.querySelectorAll('input[name="rule"]').forEach(input => {
       input.checked = rules.includes(input.value);
     });
   }
 
-  // 選択されたルールをリストに表示
+  // 表示を更新 + 削除ボタン追加
   function renderSelectedRules(rules) {
     selectedRulesList.innerHTML = '';
-    rules.forEach(rule => {
+    rules.forEach((rule, index) => {
       const li = document.createElement('li');
       li.textContent = rule;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '削除';
+      deleteBtn.className = 'delete-rule-btn';
+      deleteBtn.style.marginLeft = '10px';
+      deleteBtn.onclick = () => {
+        rules.splice(index, 1);
+        saveRules(rules);
+        checkSavedRules(rules);
+        renderSelectedRules(rules);
+      };
+
+      li.appendChild(deleteBtn);
       selectedRulesList.appendChild(li);
     });
   }
 });
+
+
