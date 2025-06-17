@@ -1,0 +1,51 @@
+const taskInput = document.getElementById('taskInput');
+const dateInput = document.getElementById('dateInput');
+const timeInput = document.getElementById('timeInput');
+const taskList = document.getElementById('taskList');
+let tasks = [];
+
+window.onload = () => {
+  // サーバーからタスクを取得
+  fetch('/api/tasks')
+    .then(response => response.json())
+    .then(data => {
+      tasks = data;
+      renderTasks();
+    })
+    .catch(error => console.error('Error:', error));
+};
+
+function saveTasks() {
+  // サーバーにタスクを保存
+  fetch('/api/tasks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tasks)
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+// ... existing code ...
+
+function sendNotification(task) {
+  if (Notification.permission === "granted") {
+    const notification = new Notification("⏰ タスクの時間です！", {
+      body: `${task.content}（締切: ${task.deadline}）`,
+      icon: "icon.png"
+    });
+
+    // LINEにも通知を送信
+    fetch('/api/notify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `⏰ タスクの時間です！\n${task.content}（締切: ${task.deadline}）`
+      })
+    })
+    .catch(error => console.error('Error:', error));
+  }
+}
